@@ -31,3 +31,13 @@ resource "aws_eks_node_group" "node-group" {
     aws_iam_role_policy_attachment.node-AmazonEC2ContainerRegistryReadOnly-attach,
   ]
 }
+
+data "external" "thumb" {
+  program = ["kubegrunt", "eks", "oidc-thumbprint", "--issuer-url", aws_eks_cluster.eks.identity.0.oidc.0.issuer]
+}
+
+resource "aws_iam_openid_connect_provider" "cluster" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.external.thumb.result.thumbprint]
+  url             = aws_eks_cluster.eks.identity.0.oidc.0.issuer
+}
