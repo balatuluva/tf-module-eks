@@ -68,12 +68,12 @@ resource "aws_iam_role" "ssm-role-for-pod" {
         {
             "Effect": "Allow",
             "Principal": {
-                "Federated": "arn:aws:iam::${data.aws_caller_identity.identity.account_id}:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer) [4]}"
+                "Federated": "arn:aws:iam::${data.aws_caller_identity.identity.account_id}:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer)[4]}"
             },
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
                 "StringEquals": {
-                    "oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer) [4]}:aud": "sts.amazonaws.com"
+                    "oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer)[4]}:aud": "sts.amazonaws.com"
                 }
             }
         }
@@ -82,23 +82,28 @@ resource "aws_iam_role" "ssm-role-for-pod" {
 POLICY
 }
 
+
+
+
 resource "aws_iam_role_policy" "ssm-ps-policy" {
   name = "eks-${var.ENV}-ssm-ps-policy"
-  role = aws_iam_role.ssm-role-for-pod
+  role = aws_iam_role.ssm-role-for-pod.id
+
+
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid": "VisualEditor0",
-        "Effect": "Allow",
-        "Action": [
+        "Sid" : "VisualEditor0",
+        "Effect" : "Allow",
+        "Action" : [
           "kms:Decrypt",
           "ssm:GetParameterHistory",
           "ssm:GetParametersByPath",
           "ssm:GetParameters",
           "ssm:GetParameter"
         ],
-        "Resource": concat([var.kms_arn, "arn:aws:ssm:us-east-1:${data.aws_caller_identity.identity.account_id}:parameter/*"])
+        "Resource" : concat([var.kms_arn, "arn:aws:ssm:us-east-1:${data.aws_caller_identity.identity.account_id}:parameter/*"])
       }
     ]
   })
