@@ -68,12 +68,12 @@ resource "aws_iam_role" "ssm-role-for-pod" {
         {
             "Effect": "Allow",
             "Principal": {
-                "Federated": "arn:aws:iam::${data.aws_caller_identity.identity.account_id}:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer)[4]}"
+                "Federated": "arn:aws:iam::${data.aws_caller_identity.identity.account_id}:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer) [4]}"
             },
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
                 "StringEquals": {
-                    "oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer)[4]}:aud": "sts.amazonaws.com"
+                    "oidc.eks.us-east-1.amazonaws.com/id/${split("/", aws_eks_cluster.eks.identity.0.oidc.0.issuer) [4]}:aud": "sts.amazonaws.com"
                 }
             }
         }
