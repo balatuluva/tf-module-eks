@@ -7,6 +7,8 @@ variable "MIN_SIZE" {}
 variable "eks_version" {
   default = 1.23
 }
+variable "kms_arn" {}
+
 #variable "CREATE_ALB_INGRESS" {
 #  default = false
 #}
